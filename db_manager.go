@@ -11,6 +11,12 @@ import (
 
 const (
 	configFile = "db_config.json"
+
+	listPointStatment    = `SELECT * FROM point`
+	insertPointStatement = `
+		INSERT INTO point (
+			bus_id, longitude, latitude, timestamp
+		) VALUES (?, ?, ?, ?)`
 )
 
 type dbConfig struct {
@@ -23,7 +29,9 @@ type dbConfig struct {
 
 // DBManager is responsible for transactions of database
 type DBManager struct {
-	db *sql.DB
+	db          *sql.DB
+	listPoint   *sql.Stmt
+	insertPoint *sql.Stmt
 }
 
 // Init method can initialize DBManager from config file.
@@ -31,6 +39,11 @@ func (d *DBManager) Init() (err error) {
 	if d.db, err = initDatabase(); err != nil {
 		return err
 	}
+
+	if err = prepareSQL(d); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -72,6 +85,20 @@ func readDatabaseConfig(c *dbConfig) error {
 	decoder := json.NewDecoder(file)
 
 	if err := decoder.Decode(&c); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func prepareSQL(d *DBManager) (err error) {
+	d.listPoint, err = d.db.Prepare(listPointStatment)
+	if err != nil {
+		return err
+	}
+
+	d.insertPoint, err = d.db.Prepare(insertPointStatement)
+	if err != nil {
 		return err
 	}
 

@@ -45,7 +45,13 @@ func postTrackers(c *gin.Context) {
 
 	fmt.Printf("Point: %+v\n", p)
 
-	// TODO: Insert data into db
+	_, err := mysqlDB.insertPoint.Query(p.BusID, p.Latitude, p.Longitude, p.TimeStamp)
+
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
 	})
