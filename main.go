@@ -1,28 +1,21 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
-	appTag     = "BusTracker"
-	configFile = "db_config.json"
+	// AppTag can be use to debug tag
+	AppTag = "shadow3x3x3/BusTracker"
 )
 
-type databaseConfig struct {
-	IP       string `json:"ip"`
-	Port     int    `json:"port"`
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Database string `json:"database"`
-}
+var (
+	mysqlDB DBManager
+)
 
 type trackerPoint struct {
 	BusID     string  `json:"bus_id"`
@@ -46,7 +39,6 @@ func postTrackers(c *gin.Context) {
 			"error":  "json decoding : " + err.Error(),
 			"status": http.StatusBadRequest,
 		})
-
 		return
 	}
 	// TODO: Error handles
@@ -59,52 +51,8 @@ func postTrackers(c *gin.Context) {
 	})
 }
 
-func readDatabaseConfig(c *databaseConfig) error {
-	file, err := os.Open(configFile)
-
-	defer file.Close()
-
-	if err != nil {
-		return err
-	}
-
-	decoder := json.NewDecoder(file)
-
-	if err := decoder.Decode(&c); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func initDatabase() error {
-	config := databaseConfig{}
-
-	if err := readDatabaseConfig(&config); err != nil {
-		return err
-	}
-
-	dbURL := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
-		config.User, config.Password, config.IP, config.Port, config.Database)
-
-	db, err := sql.Open("mysql", dbURL)
-
-	if err != nil {
-		return err
-	}
-
-	// Simple test db connection
-	if _, err := db.Query("select 1"); err != nil {
-		return err
-	}
-
-	fmt.Printf("[%s] Database is OK!\n\n", appTag)
-
-	return nil
-}
-
 func main() {
-	if err := initDatabase(); err != nil {
+	if err := mysqlDB.Init(); err != nil {
 		fmt.Println(err)
 		return
 	}
