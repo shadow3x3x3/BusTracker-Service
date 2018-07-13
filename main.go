@@ -16,7 +16,7 @@ const (
 	configFile = "db_config.json"
 )
 
-type configuration struct {
+type databaseConfig struct {
 	IP       string `json:"ip"`
 	Port     int    `json:"port"`
 	User     string `json:"user"`
@@ -59,7 +59,7 @@ func postTrackers(c *gin.Context) {
 	})
 }
 
-func readDatabaseConfig(c *configuration) error {
+func readDatabaseConfig(c *databaseConfig) error {
 	file, err := os.Open(configFile)
 
 	defer file.Close()
@@ -78,7 +78,7 @@ func readDatabaseConfig(c *configuration) error {
 }
 
 func initDatabase() error {
-	config := configuration{}
+	config := databaseConfig{}
 
 	if err := readDatabaseConfig(&config); err != nil {
 		return err
