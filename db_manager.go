@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	configFile = "db_config.json"
+	dbConfigFile = "db_config.json"
 
 	listPointStatment    = `SELECT * FROM point`
 	insertPointStatement = `
@@ -74,7 +74,7 @@ func initDatabase() (*sql.DB, error) {
 }
 
 func readDatabaseConfig(c *dbConfig) error {
-	file, err := os.Open(configFile)
+	file, err := os.Open(dbConfigFile)
 
 	defer file.Close()
 
