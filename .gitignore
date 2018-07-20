@@ -12,4 +12,4 @@
 *.out
 
 # Configure Files
-db_config.json
+*_config.json
