@@ -12,11 +12,15 @@ import (
 const (
 	dbConfigFile = "db_config.json"
 
-	listPointStatment    = `SELECT * FROM point`
+	listPointStatment = `
+		SELECT bus_id, longitude, latitude, timestamp
+		FROM point`
+
 	insertPointStatement = `
 		INSERT INTO point (
 			bus_id, longitude, latitude, timestamp
-		) VALUES (?, ?, ?, ?)`
+		)
+		VALUES (?, ?, ?, ?)`
 )
 
 type dbConfig struct {
@@ -45,6 +49,40 @@ func (d *DBManager) Init() (err error) {
 	}
 
 	return nil
+}
+
+// ListPoints can query all points from db and make them to TrackerPoint struct
+func (d *DBManager) ListPoints() ([]*TrackerPoint, error) {
+	var points []*TrackerPoint
+
+	rows, err := d.listPoint.Query()
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var busID string
+		var longitude float64
+		var latitude float64
+		var timestamp string
+
+		err = rows.Scan(&busID, &longitude, &latitude, &timestamp)
+
+		if err != nil {
+			return nil, err
+		}
+
+		points = append(points, &TrackerPoint{
+			BusID:     busID,
+			TimeStamp: timestamp,
+			Longitude: longitude,
+			Latitude:  latitude,
+		})
+
+	}
+
+	return points, nil
 }
 
 func initDatabase() (*sql.DB, error) {

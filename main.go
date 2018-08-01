@@ -17,7 +17,8 @@ var (
 	mysqlDB DBManager
 )
 
-type trackerPoint struct {
+// TrackerPoint is a basic unit
+type TrackerPoint struct {
 	BusID     string  `json:"bus_id"`
 	TimeStamp string  `json:"timestamp"`
 	Longitude float64 `json:"longitude"`
@@ -25,6 +26,16 @@ type trackerPoint struct {
 }
 
 func getTrackers(c *gin.Context) {
+	points, err := mysqlDB.ListPoints()
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	for _, p := range points {
+		fmt.Printf("Point: %+v\n", p)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
 		"data":   "null", // TODO: Fetch data from db
@@ -32,7 +43,7 @@ func getTrackers(c *gin.Context) {
 }
 
 func postTrackers(c *gin.Context) {
-	p := trackerPoint{}
+	p := TrackerPoint{}
 
 	if err := c.BindJSON(&p); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
