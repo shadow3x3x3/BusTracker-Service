@@ -53,7 +53,7 @@ func (d *DBManager) Init() (err error) {
 
 // ListPoints can query all points from db and make them to TrackerPoint struct
 func (d *DBManager) ListPoints() ([]*TrackerPoint, error) {
-	var points []*TrackerPoint
+	points := []*TrackerPoint{}
 
 	rows, err := d.listPoint.Query()
 
