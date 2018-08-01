@@ -21,7 +21,7 @@ type trackerPoint struct {
 	BusID     string  `json:"bus_id"`
 	TimeStamp string  `json:"timestamp"`
 	Longitude float64 `json:"longitude"`
-	Latitude  float32 `json:"latitude"`
+	Latitude  float64 `json:"latitude"`
 }
 
 func getTrackers(c *gin.Context) {
