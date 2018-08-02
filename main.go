@@ -31,13 +31,9 @@ func getTrackers(c *gin.Context) {
 		fmt.Print(err)
 	}
 
-	for _, p := range points {
-		fmt.Printf("Point: %+v\n", p)
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"status": http.StatusOK,
-		"data":   "null", // TODO: Fetch data from db
+		"data": points,
 	})
 }
 
