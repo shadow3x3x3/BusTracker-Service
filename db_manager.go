@@ -62,10 +62,10 @@ func (d *DBManager) ListPoints() ([]*TrackerPoint, error) {
 	}
 
 	for rows.Next() {
-		var busID string
-		var longitude float64
-		var latitude float64
-		var timestamp string
+		busID := ""
+		longitude := float64(0)
+		latitude := float64(0)
+		timestamp := ""
 
 		err = rows.Scan(&busID, &longitude, &latitude, &timestamp)
 
