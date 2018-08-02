@@ -28,7 +28,7 @@ func getTrackers(c *gin.Context) {
 	points, err := mysqlDB.ListPoints()
 
 	if err != nil {
-		fmt.Print(err)
+		fmt.Println(err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -54,7 +54,7 @@ func postTrackers(c *gin.Context) {
 	_, err := mysqlDB.insertPoint.Query(p.BusID, p.Latitude, p.Longitude, p.TimeStamp)
 
 	if err != nil {
-		fmt.Print(err)
+		fmt.Println(err)
 		return
 	}
 
