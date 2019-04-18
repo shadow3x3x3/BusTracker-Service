@@ -12,7 +12,7 @@ import (
 const (
 	dbConfigFile = "db_config.json"
 
-	listPointStatment = `
+	listPointStatement = `
 		SELECT bus_id, longitude, latitude, timestamp
 		FROM point`
 
@@ -44,11 +44,7 @@ func (d *DBManager) Init() (err error) {
 		return err
 	}
 
-	if err = prepareSQL(d); err != nil {
-		return err
-	}
-
-	return nil
+	return prepareSQL(d)
 }
 
 // ListPoints can query all points from db and make them to TrackerPoint struct
@@ -122,15 +118,11 @@ func readDatabaseConfig(c *dbConfig) error {
 
 	decoder := json.NewDecoder(file)
 
-	if err := decoder.Decode(&c); err != nil {
-		return err
-	}
-
-	return nil
+	return decoder.Decode(&c)
 }
 
 func prepareSQL(d *DBManager) (err error) {
-	d.listPoint, err = d.db.Prepare(listPointStatment)
+	d.listPoint, err = d.db.Prepare(listPointStatement)
 	if err != nil {
 		return err
 	}

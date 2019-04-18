@@ -23,10 +23,7 @@ type MailSender struct {
 
 // Init method can initialize MailSender from config file.
 func (m *MailSender) Init() (err error) {
-	if err = initMailConfig(m); err != nil {
-		return err
-	}
-	return nil
+	return initMailConfig(m)
 }
 
 // Send method can send email by context
@@ -75,11 +72,7 @@ func readMailConfig(c *mailConfig) error {
 
 	decoder := json.NewDecoder(file)
 
-	if err := decoder.Decode(&c); err != nil {
-		return err
-	}
-
-	return nil
+	return decoder.Decode(&c)
 }
 
 func makeMailStructure(
